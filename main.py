@@ -1,23 +1,34 @@
 import streamlit as st
 import pandas as pd
-import tempfile, os, logging
-from dotenv import load_dotenv
+import tempfile, logging
 
-# 기존 모듈 import (API 호출 부분은 변경 없이 사용)
-import ai_service  # :contentReference[oaicite:3]{index=3}
-import database as db  # :contentReference[oaicite:4]{index=4}
-import report_generator as rpt  # :contentReference[oaicite:5]{index=5}
+# 기존 모듈 import
+import ai_service
+import database as db
+import report_generator as rpt
 
-# 환경변수 로드 및 로깅 설정
-load_dotenv()
+# 로깅 설정
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
-REQUIRED_VARS = ['OPENAI_API_KEY', 'DB_URL']
-missing = [var for var in REQUIRED_VARS if not os.getenv(var)]
-if missing:
-    st.error(f"필수 환경 변수가 설정되지 않았습니다: {', '.join(missing)}")
+# Streamlit Secrets에서 환경 변수 로드
+try:
+    OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+    DB_URL = st.secrets["DB_URL"]
+except KeyError as e:
+    st.error(f"🚨 환경 변수 {e}가 설정되지 않았습니다! Streamlit Cloud 'Secrets'에서 설정해주세요.")
     st.stop()
 
+# 환경 변수 확인 로그
+logging.info(f"✅ OpenAI API Key 및 DB URL 로드 완료")
+
+# 필수 환경 변수 확인
+REQUIRED_VARS = ["OPENAI_API_KEY", "DB_URL"]
+missing = [var for var in REQUIRED_VARS if var not in st.secrets]
+if missing:
+    st.error(f"🚨 필수 환경 변수가 설정되지 않았습니다: {', '.join(missing)}")
+    st.stop()
+
+# 캐시된 DataManager (추후 확장을 위해 클래스로 감쌀 수 있음)
 # 캐시된 DataManager (추후 확장을 위해 클래스로 감쌀 수 있음)
 class DataManager:
     @staticmethod
