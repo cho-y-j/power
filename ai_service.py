@@ -2,8 +2,15 @@ from openai import OpenAI
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Streamlit Secrets에서 환경 변수 가져오기
+try:
+    OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+except KeyError:
+    st.error("🚨 OpenAI API 키가 설정되지 않았습니다! Streamlit Cloud 'Secrets'에서 설정해주세요.")
+    st.stop()
+
+# OpenAI 클라이언트 초기화
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 def analyze_data_structure(df_info: str) -> str:
     """데이터 컬럼 정보를 기반으로 최적의 PostgreSQL 스키마를 생성하는 SQL 코드를 도출합니다."""
