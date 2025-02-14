@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import tempfile, logging
-
+import os
 # 기존 모듈 import
 import ai_service
 import database as db
