@@ -1,6 +1,7 @@
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+import streamlit as st
 
 # Streamlit Secrets에서 환경 변수 가져오기
 try:
