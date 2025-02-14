@@ -1,6 +1,6 @@
 streamlit>=1.24.0
 pandas>=2.0.0
-openai==0.28
+openai
 psycopg2-binary>=2.9.9
 python-dotenv>=1.0.0
 python-pptx>=0.6.21
